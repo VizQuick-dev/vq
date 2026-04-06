@@ -1,0 +1,6 @@
+/test
+test.sh
+*.out
+*.a
+*.o
+*.exe
