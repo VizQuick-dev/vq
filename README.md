@@ -4,4 +4,4 @@ The Image converting cli tool
 
 # Examples
 
-`vq -i file.pbm -o file.pbm`
+`vq -i file.pbm file.pbm`
