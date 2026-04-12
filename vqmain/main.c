@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 {
     if (argc < 4)
     {
-        printf("please read the docs in /docs/vq.html");
+        printf("please read the docs in /docs/vq.html\n");
         return 1;
     }
     else
