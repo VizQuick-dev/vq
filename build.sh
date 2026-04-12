@@ -1,3 +1,3 @@
-gcc vqmain/main.c parse/*.c -o vq
+gcc vqmain/main.c parse/*.c lib/pbm/*.c -o vq
 echo "--------------------------------------------------------------------------------"
 read
