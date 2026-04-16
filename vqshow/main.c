@@ -4,7 +4,7 @@
 int main(int argc, char *argv[])
 {
     if(argc < 2){
-        printf("usage: vq <file>\n");
+        printf("usage: vqshow <file>\n");
 	return 1;
     }else{
   	char *input_filename = argv[1];
