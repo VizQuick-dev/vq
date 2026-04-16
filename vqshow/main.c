@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
   	char *input_filename = argv[1];
 	int input_check = parse_check_file(input_filename);
 	
-	printf("%d",input_check)
+	printf("%d",input_check);
 
 	return 0;
     }
