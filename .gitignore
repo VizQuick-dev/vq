@@ -4,3 +4,6 @@ test.sh
 *.a
 *.o
 *.exe
+vq
+vqshow
+vqterm
