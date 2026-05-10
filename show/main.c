@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "../parse/file.h"
 #include "../parse/filetype.h"
 #include "../parse/list.h"
 
@@ -18,7 +19,8 @@ int main(int argc, char *argv[])
 
         if(func_size != NULL)
         {
-            int *result = func_size("test");
+            char *input_filecontent = read_file(input_filename);
+            int *result = func_size(input_filecontent);
             printf("x=%d; y=%d\n",result[0],result[1]);
         }
     }
