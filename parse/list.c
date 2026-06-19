@@ -4,7 +4,7 @@
 #include "../lib/pbm/main.h"
 
 typedef int* (*parse_list_func_size) (char*);
-typedef int* (*parse_list_func_parse) (char*);
+typedef unsigned char* (*parse_list_func_parse) (char*);
 
 typedef struct
 {
@@ -23,6 +23,15 @@ parse_list_func_size parse_list_get_size(const char *searchparam) {
     for (size_t i = 0; i < list_size; i++) {
         if (strcmp(list[i].ext, searchparam) == 0) {
             return list[i].fns;
+        }
+    }
+    return NULL;
+}
+
+parse_list_func_parse parse_list_get_parse(const char *searchparam) {
+    for (size_t i = 0; i < list_size; i++) {
+        if (strcmp(list[i].ext, searchparam) == 0) {
+            return list[i].fnp;
         }
     }
     return NULL;

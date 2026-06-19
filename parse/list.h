@@ -2,5 +2,7 @@
 #define PARSE_LIST_H
 typedef int* (*parse_list_func_size) (char*);
 parse_list_func_size parse_list_get_size(const char*);
+typedef unsigned char* (*parse_list_func_parse) (char*);
+parse_list_func_parse parse_list_get_parse(const char*);
 
 #endif
