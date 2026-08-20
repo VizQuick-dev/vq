@@ -1,7 +1,9 @@
-gcc vqmain/main.c parse/*.c lib/pbm/*.c -o vq
+echo "== [ Built libvq.a ] =="
+
+gcc vqmain/main.c parse/*.c lib/*/*.c -o vq
 echo "== [ Compiled vq ] =="
-gcc show/main.c parse/*.c lib/pbm/*.c -o vqshow
+gcc show/main.c parse/*.c lib/*/*.c -o vqshow
 echo "== [ Compiled vqshow ] == "
-gcc term/main.c parse/*.c lib/pbm/*.c -o vqterm
+gcc term/main.c parse/*.c lib/*/*.c -o vqterm
 echo "== [ Compiled vqterm ] == "
 read

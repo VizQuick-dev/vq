@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "../lib/pbm/main.h"
+#include "../lib/ppm/main.h"
 
 typedef int* (*parse_list_func_size) (char*);
 typedef unsigned char* (*parse_list_func_parse) (char*);
@@ -14,7 +15,8 @@ typedef struct
 } item;
 
 item list[] = {
-    {".pbm", vq_pbm_size, vq_pbm_parse},
+    {"pbm", vq_pbm_size, vq_pbm_parse},
+    {"ppm", vq_ppm_size, vq_ppm_parse},
 };
 
 size_t list_size = sizeof(list) / sizeof(list[0]);

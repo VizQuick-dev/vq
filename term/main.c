@@ -16,6 +16,8 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    printf("hi <3\n");
+
     char *input_filename = argv[1];
 
     if (parse_check_file(input_filename) != 1) {
@@ -24,6 +26,13 @@ int main(int argc, char *argv[])
     }
 
     char *input_filetype = parse_filetype_get(input_filename);
+
+    printf("[ LOGS ]    filetype=%s\n", input_filetype);
+
+    if (input_filetype == NULL) {
+        printf("input_filetype NULL\n");
+        return 1;
+    }
 
     parse_list_func_size func_size = parse_list_get_size(input_filetype);
     parse_list_func_parse func_parse = parse_list_get_parse(input_filetype);
@@ -34,8 +43,13 @@ int main(int argc, char *argv[])
     }
 
     char *input_filecontent = read_file(input_filename);
+
     int *result_size = func_size(input_filecontent);
     unsigned char *result = func_parse(input_filecontent);
+
+    if(result_size == NULL) {
+         printf("result_size NULL\n");
+    }
 
     for (int y = 0; y < result_size[1]; y += 2)
     {
