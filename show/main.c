@@ -19,8 +19,9 @@ int main(int argc, char *argv[])
 
         if(func_size != NULL)
         {
-            char *input_filecontent = read_file(input_filename);
-            int *result = func_size(input_filecontent);
+            size_t img_size;
+            char *input_filecontent = read_file(input_filename,&img_size);
+            int *result = func_size(input_filecontent,img_size);
             printf("x=%d; y=%d\n",result[0],result[1]);
         }
     }

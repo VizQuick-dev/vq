@@ -42,10 +42,12 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    char *input_filecontent = read_file(input_filename);
+    size_t size;
 
-    int *result_size = func_size(input_filecontent);
-    unsigned char *result = func_parse(input_filecontent);
+    char *input_filecontent = read_file(input_filename,&size);
+
+    int *result_size = func_size(input_filecontent,size);
+    unsigned char *result = func_parse(input_filecontent,size);
 
     if(result_size == NULL) {
          printf("result_size NULL\n");

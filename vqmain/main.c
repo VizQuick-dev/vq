@@ -23,9 +23,11 @@ int main(int argc, char *argv[])
 
         if(func_size != NULL)
         {
-            char *input_filecontent = read_file(input_filename);
-            printf("%s",input_filecontent);
-            int *result = func_size(input_filecontent);
+            size_t size;
+
+            char *input_filecontent = read_file(input_filename,&size);
+            printf("%s",input_filecontent,size);
+            int *result = func_size(input_filecontent,size);
             printf("x=%d; y=%d\n",result[0],result[1]);
         }
     }

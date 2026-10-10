@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
-int *vq_pbm_size(char *buf)
+int *vq_pbm_size(char *buf,size_t size)
 {
     int *list = malloc(2 * sizeof(int));
     if (list == NULL)
@@ -49,7 +49,7 @@ int *vq_pbm_size(char *buf)
     return list;
 }
 
-unsigned char *vq_pbm_parse(char *buf)
+unsigned char *vq_pbm_parse(char *buf, size_t size)
 {
     char *p = buf;
 

@@ -26,6 +26,9 @@ char *parse_filetype_get(char *filename)
     if (bytes[0] == 0x50 && bytes[1] == 0x36)
         return "ppm";
 
+    if (bytes[0] == 0x89 && bytes[1] == 0x50)
+        return "png";
+
     return NULL;
 }
 
