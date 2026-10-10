@@ -17,11 +17,12 @@ unsigned char *vq_parse(char *filename, int *width, int *height) {
     printf("%s\n",filetype);
 
     if (filetype != NULL) {
-        char *input_filecontent = read_file(filename);
+        size_t img_size;
+        char *input_filecontent = read_file(filename,&img_size);
         parse_list_func_size vq_func_size = parse_list_get_size(filetype);
         parse_list_func_parse vq_func_parse = parse_list_get_parse(filetype);
 
-        int *size = vq_func_size(input_filecontent);
+        int *size = vq_func_size(input_filecontent,img_size);
 
         printf("%s\n",filename);
         printf("%d,%d\n",size[0],size[1]);
@@ -31,7 +32,7 @@ unsigned char *vq_parse(char *filename, int *width, int *height) {
 
         free(size);
 
-        return vq_func_parse(input_filecontent);
+        return vq_func_parse(input_filecontent,img_size);
     }
 
     return NULL;

@@ -8,8 +8,8 @@ int *vq_png_size(char *buf,size_t size)
     //todo
     int *list = malloc(2 * sizeof(int));
 
-    if (sizeof(buf) < 24)
-        return list;
+    if (size < 24)
+        return NULL;
 
     const unsigned char *data = (const unsigned char *)buf;
 

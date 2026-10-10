@@ -6,6 +6,7 @@ SRC = parse/argv.c \
       parse/filetype.c \
       parse/list.c \
       lib/pbm/main.c \
+      lib/png/main.c \
       lib/ppm/main.c
 
 OBJ = $(SRC:%.c=build/%.o)
