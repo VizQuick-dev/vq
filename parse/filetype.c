@@ -14,20 +14,17 @@ char *parse_filetype_get(char *filename)
 
     fclose(file);
 
-    if (bytes[0] == 0x50 && bytes[1] == 0x31)
+    if (bytes[0] == 0x50 && (bytes[1] == 0x31 || bytes[1] == 0x34))
         return "pbm";
 
-    if (bytes[0] == 0x50 && bytes[1] == 0x34)
-        return "pbm";
-
-    if (bytes[0] == 0x50 && bytes[1] == 0x33)
-        return "ppm";
-
-    if (bytes[0] == 0x50 && bytes[1] == 0x36)
-        return "ppm";
+    if (bytes[0] == 0x50 && (bytes[1] == 0x32 || bytes[1] == 0x35))
+        return "pgm";
 
     if (bytes[0] == 0x89 && bytes[1] == 0x50)
         return "png";
+
+    if (bytes[0] == 0x50 && (bytes[1] == 0x33 || bytes[1] == 0x36))
+        return "ppm";
 
     return NULL;
 }

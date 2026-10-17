@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "../lib/pbm/main.h"
+#include "../lib/pgm/main.h"
 #include "../lib/ppm/main.h"
 #include "../lib/png/main.h"
 
@@ -17,6 +18,7 @@ typedef struct
 
 item list[] = {
     {"pbm", vq_pbm_size, vq_pbm_parse},
+    {"pgm", vq_pgm_size, vq_pgm_parse},
     {"ppm", vq_ppm_size, vq_ppm_parse},
     {"png", vq_png_size, vq_png_parse},
 };
