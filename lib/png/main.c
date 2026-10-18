@@ -118,7 +118,7 @@ unsigned char *vq_png_parse(char *buf,size_t size)
     int p = 8; // pointer in the file
 
     // buffer for decompression
-    unsigned char idat_buf[size];
+    unsigned char *idat_buf = malloc(size);
     size_t idat_buf_len = 0;
     
     //Palette
@@ -130,6 +130,12 @@ unsigned char *vq_png_parse(char *buf,size_t size)
     uint32_t height;
     int bit_depth;
     int color_type;
+
+    printf("bytes: %02X\n", data[0]);
+    printf("bytes: %02X\n", data[1]);
+    printf("bytes: %02X\n", data[2]);
+    printf("bytes: %02X\n", data[7]);
+    printf("bytes: %02X\n", data[8]);
 
     while (p < (int)size) {
 
@@ -189,9 +195,6 @@ unsigned char *vq_png_parse(char *buf,size_t size)
 
             memcpy(idat_buf + idat_buf_len, data + p + 8, len);
             idat_buf_len += len;
-
-            printf("Compression Method: %d\n",compression_method);
-            printf("Additional Flags: %d\n",additional_flags);
         } 
 
         p += 12 + len;
@@ -220,6 +223,9 @@ unsigned char *vq_png_parse(char *buf,size_t size)
             rgba[i * 4 + 2] = pixels[i * 3 + 2];
             rgba[i * 4 + 3] = 255;
         }
+
+        free(raw);
+        free(pixels);
     }
 
     // Type 3
@@ -241,6 +247,29 @@ unsigned char *vq_png_parse(char *buf,size_t size)
              rgba[i * 4 + 1] = (unsigned char)palette[index * 3 + 1];
              rgba[i * 4 + 2] = (unsigned char)palette[index * 3 + 2];
              rgba[i * 4 + 3] = 255;
+        }
+
+        free(raw);
+        free(pixels);
+    }
+
+    // Type 6
+    if (color_type == 6) {
+        size_t row_bytes = (size_t)width * 4;
+        size_t expected_size = height * (row_bytes + 1);
+
+        uint8_t *raw = malloc(expected_size);
+        uint8_t *pixels = malloc((size_t)width * height * 4);
+
+        png_inflate(idat_buf, idat_buf_len, raw, expected_size);
+
+        png_unfilter(raw, pixels, width, height, 4, row_bytes);
+
+        for (size_t i = 0; i < (size_t)width * height; i++) {
+            rgba[i * 4 + 0] = pixels[i * 4 + 0];
+            rgba[i * 4 + 1] = pixels[i * 4 + 1];
+            rgba[i * 4 + 2] = pixels[i * 4 + 2];
+            rgba[i * 4 + 3] = pixels[i * 4 + 3];
         }
     }
 

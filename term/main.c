@@ -47,11 +47,12 @@ int main(int argc, char *argv[])
     char *input_filecontent = read_file(input_filename,&size);
 
     int *result_size = func_size(input_filecontent,size);
-    unsigned char *result = func_parse(input_filecontent,size);
 
-    if(result_size == NULL) {
-         printf("result_size NULL\n");
+    if (result_size == NULL) {
+        printf("result_size NULL\n");
     }
+
+    unsigned char *result = func_parse(input_filecontent,size);
 
     for (int y = 0; y < result_size[1]; y += 2)
     {
