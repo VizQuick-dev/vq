@@ -1,7 +1,9 @@
 CC = gcc
-CFLAGS = -Wall -Wextra
+CFLAGS = -Wall -Wextra -fPIC
+LDLIBS = -lz
 
-SRC = parse/argv.c \
+SRC = vq.c \
+      parse/argv.c \
       parse/file.c \
       parse/filetype.c \
       parse/list.c \
@@ -12,17 +14,17 @@ SRC = parse/argv.c \
 
 OBJ = $(SRC:%.c=build/%.o)
 
-all: 
-	make clean
-	make libvq.a
+TARGET = libvq.so
 
-libvq.a: $(OBJ)
-	ar rcs $@ $(OBJ)
+all: $(TARGET)
 	./build.sh
+
+$(TARGET): $(OBJ)
+	$(CC) -shared -o $@ $(OBJ) $(LDLIBS)
 
 build/%.o: %.c
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf build libvq.a
+	rm -rf build libvq.so

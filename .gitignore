@@ -5,6 +5,9 @@ test.sh
 *.o
 *.exe
 
+vq.dll
+libvq.so
+
 vq
 vq.exe
 vqshow
