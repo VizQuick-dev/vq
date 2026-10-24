@@ -7,9 +7,11 @@
 
 #include "vq.h"
 
-int png_unfilter(uint8_t *raw, uint8_t *pixels, int width, int height, int bytes_per_pixel, size_t row_bytes)
+int png_unfilter(uint8_t *restrict raw, uint8_t *restrict pixels, int width, int height, int bytes_per_pixel, size_t row_bytes)
 {
-    (void)width;
+    if (!raw || !pixels || width <= 0 || height <= 0 || bytes_per_pixel <= 0)
+        return 0;
+
     for (int y = 0; y < height; y++) {
         uint8_t filter = raw[y * (row_bytes + 1)];
         uint8_t *src = raw + y * (row_bytes + 1) + 1;
@@ -218,7 +220,10 @@ unsigned char *vq_png_parse(char *buf,size_t size)
 
         png_inflate(idat_buf, idat_buf_len, raw, expected_size);
 
-        png_unfilter(raw, pixels, width, height, 3, row_bytes);
+        if (png_unfilter(raw, pixels, width, height, 3, row_bytes) == 0) {
+            vq_set_error("png_unfilter failed");
+            return NULL;
+        }
 
         for (size_t i = 0; i < (size_t)width * height; i++) {
             rgba[i * 4 + 0] = pixels[i * 3 + 0];
