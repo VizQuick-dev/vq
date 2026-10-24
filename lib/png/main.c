@@ -261,18 +261,10 @@ unsigned char *vq_png_parse(char *buf,size_t size)
         size_t expected_size = height * (row_bytes + 1);
 
         uint8_t *raw = malloc(expected_size);
-        uint8_t *pixels = malloc((size_t)width * height * 4);
 
         png_inflate(idat_buf, idat_buf_len, raw, expected_size);
 
-        png_unfilter(raw, pixels, width, height, 4, row_bytes);
-
-        for (size_t i = 0; i < (size_t)width * height; i++) {
-            rgba[i * 4 + 0] = pixels[i * 4 + 0];
-            rgba[i * 4 + 1] = pixels[i * 4 + 1];
-            rgba[i * 4 + 2] = pixels[i * 4 + 2];
-            rgba[i * 4 + 3] = pixels[i * 4 + 3];
-        }
+        png_unfilter(raw, rgba, width, height, 4, row_bytes);
     }
 
     return rgba;
