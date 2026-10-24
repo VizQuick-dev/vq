@@ -1,8 +1,8 @@
 echo "== [ Built libvq.a ] =="
 
-gcc vqmain/main.c parse/*.c lib/*/*.c -o vq -lz -I.
+gcc vqmain/main.c -o vq -lvq
 echo "== [ Compiled vq ] =="
-gcc show/main.c parse/*.c lib/*/*.c -o vqshow -lz -I.
+gcc show/main.c -o vqshow -lvq
 echo "== [ Compiled vqshow ] == "
-gcc term/main.c parse/*.c lib/*/*.c -o vqterm -lz -I.
+gcc term/main.c -o vqterm -lvq
 echo "== [ Compiled vqterm ] == "
