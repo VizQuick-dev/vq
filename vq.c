@@ -1,3 +1,5 @@
+#include "vq.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -8,7 +10,7 @@
 unsigned char *vq_parse(char *filename, int *width, int *height) {
     char *filetype = parse_filetype_get(filename);
 
-    printf("%s\n",filetype);
+    vq_log("filetype: %s\n",filetype);
 
     if (filetype != NULL) {
         size_t img_size;
@@ -18,8 +20,8 @@ unsigned char *vq_parse(char *filename, int *width, int *height) {
 
         int *size = vq_func_size(input_filecontent,img_size);
 
-        printf("%s\n",filename);
-        printf("%d,%d\n",size[0],size[1]);
+        vq_log("filename: %s\n",filename);
+        vq_log("size: %d,%d\n",size[0],size[1]);
 
         *width = size[0];
         *height = size[1];

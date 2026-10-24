@@ -5,6 +5,8 @@
 #include <string.h>
 #include <zlib.h>
 
+#include "vq.h"
+
 int png_unfilter(uint8_t *raw, uint8_t *pixels, int width, int height, int bytes_per_pixel, size_t row_bytes)
 {
     for (int y = 0; y < height; y++) {
@@ -131,11 +133,11 @@ unsigned char *vq_png_parse(char *buf,size_t size)
     int bit_depth;
     int color_type;
 
-    printf("bytes: %02X\n", data[0]);
-    printf("bytes: %02X\n", data[1]);
-    printf("bytes: %02X\n", data[2]);
-    printf("bytes: %02X\n", data[7]);
-    printf("bytes: %02X\n", data[8]);
+    vq_log("bytes: %02X\n", data[0]);
+    vq_log("bytes: %02X\n", data[1]);
+    vq_log("bytes: %02X\n", data[2]);
+    vq_log("bytes: %02X\n", data[7]);
+    vq_log("bytes: %02X\n", data[8]);
 
     while (p < (int)size) {
 
@@ -152,7 +154,7 @@ unsigned char *vq_png_parse(char *buf,size_t size)
         type[3] = (char)data[p+7];
         type[4] = '\0';
 
-        printf("type: %s | len: %d\n",type,len);
+        vq_log("type: %s | len: %d\n",type,len);
 
         if (strcmp(type,"IHDR") == 0) {
 
@@ -172,13 +174,13 @@ unsigned char *vq_png_parse(char *buf,size_t size)
             int filter_method = (int)data[p+19];
             int interlace_method = (int)data[p+20];
 
-            printf("Width:\t\t\t %d\n",width);
-            printf("Height:\t\t\t %d\n",height);
-            printf("Bit depth:\t\t %d\n",bit_depth);
-            printf("Color type:\t\t %d\n",color_type);
-            printf("Compression method:\t %d\n",compression_method);
-            printf("Filter method:\t\t %d\n",filter_method);
-            printf("Interlace method:\t %d\n",interlace_method);
+            vq_log("Width:\t\t\t %d\n",width);
+            vq_log("Height:\t\t\t %d\n",height);
+            vq_log("Bit depth:\t\t %d\n",bit_depth);
+            vq_log("Color type:\t\t %d\n",color_type);
+            vq_log("Compression method:\t %d\n",compression_method);
+            vq_log("Filter method:\t\t %d\n",filter_method);
+            vq_log("Interlace method:\t %d\n",interlace_method);
         }
 
         // PLTE
@@ -203,7 +205,7 @@ unsigned char *vq_png_parse(char *buf,size_t size)
 
     unsigned char *rgba = malloc(width * height * 4);
 
-    printf("idat lenght: %d\n",idat_buf_len);
+    vq_log("idat lenght: %d\n",idat_buf_len);
 
     // Type 2
     if (color_type == 2) {

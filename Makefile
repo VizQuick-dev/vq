@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -fPIC
+CFLAGS = -Wall -Wextra -fPIC -I.#-DENABLE_LOG
 LDLIBS = -lz
 
 SRC = vq.c \
