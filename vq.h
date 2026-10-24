@@ -14,6 +14,7 @@ extern "C" {
 #endif
 
 void vq_set_error(const char *error);
+const char *vq_get_error();
 unsigned char *vq_parse(char *filename, int *width, int *height);
 
 #ifdef __cplusplus
