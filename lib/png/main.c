@@ -9,6 +9,7 @@
 
 int png_unfilter(uint8_t *raw, uint8_t *pixels, int width, int height, int bytes_per_pixel, size_t row_bytes)
 {
+    (void)width;
     for (int y = 0; y < height; y++) {
         uint8_t filter = raw[y * (row_bytes + 1)];
         uint8_t *src = raw + y * (row_bytes + 1) + 1;
@@ -128,10 +129,10 @@ unsigned char *vq_png_parse(char *buf,size_t size)
     size_t palette_len = 0;
 
     // Variables to safe
-    uint32_t width;
-    uint32_t height;
-    int bit_depth;
-    int color_type;
+    uint32_t width = 0;
+    uint32_t height = 0;
+    int bit_depth = 8;
+    int color_type = -1;
 
     vq_log("bytes: %02X\n", data[0]);
     vq_log("bytes: %02X\n", data[1]);
@@ -205,7 +206,7 @@ unsigned char *vq_png_parse(char *buf,size_t size)
 
     unsigned char *rgba = malloc(width * height * 4);
 
-    vq_log("idat lenght: %d\n",idat_buf_len);
+    vq_log("idat lenght: %zu\n",idat_buf_len);
 
     // Type 2
     if (color_type == 2) {
