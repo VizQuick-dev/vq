@@ -7,6 +7,18 @@
 #include "parse/filetype.h"
 #include "parse/list.h"
 
+static const char *vq_error = NULL;
+
+void vq_set_error(const char *error)
+{
+    vq_error = error;
+}
+
+const char *vq_get_error()
+{
+    return vq_error;
+}
+
 unsigned char *vq_parse(char *filename, int *width, int *height) {
     char *filetype = parse_filetype_get(filename);
 
