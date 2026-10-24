@@ -20,6 +20,12 @@ const char *vq_get_error()
 }
 
 unsigned char *vq_parse(char *filename, int *width, int *height) {
+
+    if (parse_check_file(filename) == 0) {
+        vq_set_error("file not found");
+        return NULL;
+    }
+
     char *filetype = parse_filetype_get(filename);
 
     vq_log("filetype: %s\n",filetype);
@@ -42,6 +48,8 @@ unsigned char *vq_parse(char *filename, int *width, int *height) {
 
         return vq_func_parse(input_filecontent,img_size);
     }
+
+    vq_set_error("filetype not known");
 
     return NULL;
 }
