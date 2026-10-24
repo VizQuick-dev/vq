@@ -12,52 +12,63 @@ int png_unfilter(uint8_t *restrict raw, uint8_t *restrict pixels, int width, int
     if (!raw || !pixels || width <= 0 || height <= 0 || bytes_per_pixel <= 0)
         return 0;
 
+    const size_t bpp = (size_t)bytes_per_pixel;
+    const size_t stride = row_bytes + 1;
+
     for (int y = 0; y < height; y++) {
-        uint8_t filter = raw[y * (row_bytes + 1)];
-        uint8_t *src = raw + y * (row_bytes + 1) + 1;
-        uint8_t *dst = pixels + y * row_bytes;
-        uint8_t *prev = y ? pixels + (y - 1) * row_bytes : NULL;
+        const uint8_t *src = raw + (size_t)y * stride + 1;
+        uint8_t *dst = pixels + (size_t)y * row_bytes;
+        const uint8_t *prev = y > 0 ? dst - row_bytes : NULL;
 
-        for (size_t x = 0; x < row_bytes; x++) {
-            int a = x >= (size_t)bytes_per_pixel
-                  ? dst[x - bytes_per_pixel] : 0;
-            int b = prev ? prev[x] : 0;
-            int c = prev && x >= (size_t)bytes_per_pixel
-                  ? prev[x - bytes_per_pixel] : 0;
+        const uint8_t filter = raw[(size_t)y * stride];
 
-            switch (filter) {
-                case 0:
-                    dst[x] = src[x];
-                    break;
+        switch (filter) {
+            case 0:
+                memcpy(dst, src, row_bytes);
+                break;
 
-                case 1:
+            case 1:
+                for (size_t x = 0; x < row_bytes; ++x) {
+                    const unsigned a = x >= bpp ? dst[x - bpp] : 0;
                     dst[x] = (uint8_t)(src[x] + a);
-                    break;
+                }
+                break;
 
-                case 2:
-                    dst[x] = (uint8_t)(src[x] + b);
-                    break;
+            case 2:
+                if (prev) {
+                for (size_t x = 0; x < row_bytes; ++x)
+                    dst[x] = (uint8_t)(src[x] + prev[x]);
+            } else {
+                memcpy(dst, src, row_bytes);
+            }
+            break;
 
-                case 3:
-                    dst[x] = (uint8_t)(src[x] + ((a + b) / 2));
-                    break;
+            case 3:
+                for (size_t x = 0; x < row_bytes; ++x) {
+                    const unsigned a = x >= bpp ? dst[x - bpp] : 0;
+                    const unsigned b = prev ? prev[x] : 0;
+                    dst[x] = (uint8_t)(src[x] + ((a + b) >> 1));
+                }
+                break;
 
-                case 4: {
-                    int p = a + b - c;
-                    int pa = abs(p - a);
-                    int pb = abs(p - b);
-                    int pc = abs(p - c);
+            case 4:
+                for (size_t x = 0; x < row_bytes; ++x) {
+                    const int a = x >= bpp ? dst[x - bpp] : 0;
+                    const int b = prev ? prev[x] : 0;
+                    const int c = prev && x >= bpp ? prev[x - bpp] : 0;
 
-                    int pr = pa <= pb && pa <= pc ? a
-                           : pb <= pc ? b : c;
+                    const int p = a + b - c;
+                    const int pa = abs(p - a);
+                    const int pb = abs(p - b);
+                    const int pc = abs(p - c);
+
+                    const int pr = (pa <= pb && pa <= pc) ? a : (pb <= pc) ? b : c;
 
                     dst[x] = (uint8_t)(src[x] + pr);
-                    break;
                 }
-
-                default:
-                    return 0;
-            }
+                break;
+            default:
+                return 0;
         }
     }
 
