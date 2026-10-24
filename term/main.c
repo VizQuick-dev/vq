@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <locale.h>
+#include <stdint.h>
 
-#include "../parse/file.h"
-#include "../parse/filetype.h"
-#include "../parse/list.h"
+#include "../vq.h"
 
 int main(int argc, char *argv[])
 {
@@ -16,65 +15,36 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    printf("hi <3\n");
-
     char *input_filename = argv[1];
+    int width,height;
+    
+    uint8_t *pixels = vq_parse(input_filename,&width,&height);
 
-    if (parse_check_file(input_filename) != 1) {
-        printf("invalid file\n");
-        return 1;
+    if(pixels == NULL) {
+        fprintf(stderr, "VQ Error: %s\n", vq_get_error());
     }
 
-    char *input_filetype = parse_filetype_get(input_filename);
-
-    printf("[ LOGS ]    filetype=%s\n", input_filetype);
-
-    if (input_filetype == NULL) {
-        printf("input_filetype NULL\n");
-        return 1;
-    }
-
-    parse_list_func_size func_size = parse_list_get_size(input_filetype);
-    parse_list_func_parse func_parse = parse_list_get_parse(input_filetype);
-
-    if (func_size == NULL || func_parse == NULL) {
-        printf("unsupported filetype\n");
-        return 1;
-    }
-
-    size_t size;
-
-    char *input_filecontent = read_file(input_filename,&size);
-
-    int *result_size = func_size(input_filecontent,size);
-
-    if (result_size == NULL) {
-        printf("result_size NULL\n");
-    }
-
-    unsigned char *result = func_parse(input_filecontent,size);
-
-    for (int y = 0; y < result_size[1]; y += 2)
+    for (int y = 0; y < height; y += 2)
     {
-        for (int x = 0; x < result_size[0]; x++)
+        for (int x = 0; x < width; x++)
         {
-            int top = (y * result_size[0] + x) * 4;
+            int top = (y * width + x) * 4;
 
             int bottom;
-            if (y + 1 < result_size[1])
-                bottom = ((y + 1) * result_size[0] + x) * 4;
+            if (y + 1 < height)
+                bottom = ((y + 1) * width + x) * 4;
             else
                 bottom = top;
 
             printf("\033[38;2;%d;%d;%dm",
-                   result[bottom + 0],
-                   result[bottom + 1],
-                   result[bottom + 2]);
+                   pixels[bottom + 0],
+                   pixels[bottom + 1],
+                   pixels[bottom + 2]);
 
             printf("\033[48;2;%d;%d;%dm",
-                   result[top + 0],
-                   result[top + 1],
-                   result[top + 2]);
+                   pixels[top + 0],
+                   pixels[top + 1],
+                   pixels[top + 2]);
 
             fputs(block, stdout);
         }
