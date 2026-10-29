@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stddef.h>
 
 int* vq_jpeg_size(char*,size_t size)
 {

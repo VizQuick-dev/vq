@@ -14,6 +14,9 @@ char *parse_filetype_get(char *filename)
 
     fclose(file);
 
+    if (bytes[0] == 0xff && bytes[1] == 0xd8)
+        return "jpeg";
+
     if (bytes[0] == 0x50 && (bytes[1] == 0x31 || bytes[1] == 0x34))
         return "pbm";
 

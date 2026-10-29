@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "../lib/jpeg/main.h"
 #include "../lib/pbm/main.h"
 #include "../lib/pgm/main.h"
 #include "../lib/ppm/main.h"
@@ -17,6 +18,7 @@ typedef struct
 } item;
 
 item list[] = {
+    {"jpeg", vq_jpeg_size, vq_jpeg_parse},
     {"pbm", vq_pbm_size, vq_pbm_parse},
     {"pgm", vq_pgm_size, vq_pgm_parse},
     {"ppm", vq_ppm_size, vq_ppm_parse},

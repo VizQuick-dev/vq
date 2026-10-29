@@ -7,6 +7,7 @@ SRC = vq.c \
       parse/file.c \
       parse/filetype.c \
       parse/list.c \
+	  lib/jpeg/main.c \
       lib/pbm/main.c \
       lib/pgm/main.c \
       lib/png/main.c \
