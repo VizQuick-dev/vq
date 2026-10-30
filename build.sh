@@ -6,3 +6,5 @@ gcc show/main.c -o vqshow -lvq
 echo "== [ Compiled vqshow ] == "
 gcc term/main.c -o vqterm -lvq
 echo "== [ Compiled vqterm ] == "
+gcc test/main.c parse/*.c lib/*/*.c vq.c -o vqtest -g -I. -lz
+echo "== [ Compiled vqtest ] == "

@@ -1,4 +1,3 @@
-/test
 test.sh
 *.out
 *.a
@@ -14,3 +13,5 @@ vqshow
 vqshow.exe
 vqterm
 vqterm.exe
+vqtest
+vqtest.exe
