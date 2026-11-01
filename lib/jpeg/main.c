@@ -11,7 +11,8 @@ int* vq_jpeg_size(char *buf,size_t size)
 
     vq_log("hi! %zu \n",size);
 
-    uint16_t width,height;
+    int width = 0;
+    int height = 0;
     long int p = 2;
 
     while (p + 4 <= size)
@@ -30,9 +31,9 @@ int* vq_jpeg_size(char *buf,size_t size)
 
         if (marker == 0xFFC0) {
 
-            height =((uint16_t)(uint8_t)buf[p + 5] << 8) | (uint8_t)buf[p + 6];
+            height =(int)((uint16_t)(uint8_t)buf[p + 5] << 8) | (uint8_t)buf[p + 6];
 
-            width = ((uint16_t)(uint8_t)buf[p + 7] << 8) | (uint8_t)buf[p + 8];
+            width = (int)((uint16_t)(uint8_t)buf[p + 7] << 8) | (uint8_t)buf[p + 8];
 
             vq_log("size: %ux%u\n",width,height);
 
@@ -42,9 +43,9 @@ int* vq_jpeg_size(char *buf,size_t size)
         p += 2 + length;
     }
 
-    list[0] = (int)width;
+    list[0] = width;
 
-    list[1] = (int)height;
+    list[1] = height;
 
     return list;
 }
