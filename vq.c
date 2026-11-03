@@ -19,7 +19,8 @@ const char *vq_get_error()
     return vq_error;
 }
 
-unsigned char *vq_parse(char *filename, int *width, int *height) {
+unsigned char *vq_parse(char *filename, int *width, int *height)
+{
 
     if (parse_check_file(filename) == 0) {
         vq_set_error("file not found");
@@ -51,5 +52,10 @@ unsigned char *vq_parse(char *filename, int *width, int *height) {
 
     vq_set_error("filetype not known");
 
+    return NULL;
+}
+
+unsigned char *vq_parse_raw(unsigned char *buf, size_t size, int *width, int *height)
+{
     return NULL;
 }
