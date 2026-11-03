@@ -77,7 +77,6 @@ unsigned char* vq_jpeg_parse(char *buf,size_t size){
 
             pixels = malloc(width * height * 4);
 
-            break;
         }
 
         p += 2 + length;
