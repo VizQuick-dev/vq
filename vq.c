@@ -59,3 +59,8 @@ unsigned char *vq_parse_raw(unsigned char *buf, size_t size, int *width, int *he
 {
     return NULL;
 }
+
+void vq_free(unsigned char *buf)
+{
+    free(buf);
+}
