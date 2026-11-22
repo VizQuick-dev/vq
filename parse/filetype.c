@@ -6,6 +6,9 @@ char *parse_filetype_get(unsigned char *bytes,size_t size)
     if (size < 2)
         return NULL;
 
+    if (bytes[0] == 0x42 && bytes[1] == 0x4d)
+        return "bmp";
+
     if (bytes[0] == 0xff && bytes[1] == 0xd8)
         return "jpeg";
 
