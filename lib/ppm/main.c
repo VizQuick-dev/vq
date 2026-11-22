@@ -8,7 +8,7 @@ int *vq_ppm_size(unsigned char *buf,size_t size)
     if (list == NULL)
         return NULL;
 
-    char *p = buf;
+    char *p = (char *)buf;
 
     if (*p != 'P') {
         free(list);
@@ -52,7 +52,7 @@ int *vq_ppm_size(unsigned char *buf,size_t size)
 unsigned char *vq_ppm_parse(unsigned char *buf,size_t size)
 {
     printf("[PPM] decoding ppm\n");
-    char *p = buf;
+    char *p = (char *)buf;
 
     if (*p != 'P' || *(p + 1) != '3')
         return NULL;

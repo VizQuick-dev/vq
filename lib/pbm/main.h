@@ -1,5 +1,8 @@
 #ifndef LIB_PBM_MAIN_H
 #define LIB_PBM_MAIN_H
+
+#include <stddef.h>
+
 int* vq_pbm_size(unsigned char*,size_t size);
 unsigned char* vq_pbm_parse(unsigned char*,size_t size);
 

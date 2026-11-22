@@ -82,5 +82,5 @@ unsigned char* vq_jpeg_parse(unsigned char *buf,size_t size){
         p += 2 + length;
     }
 
-    return pixels;
+    return (unsigned char*)pixels;
 }
