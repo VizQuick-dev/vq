@@ -5,7 +5,7 @@
 
 #include "vq.h"
 
-int* vq_jpeg_size(char *buf,size_t size)
+int* vq_jpeg_size(unsigned char *buf,size_t size)
 {
     int *list = malloc(2 * sizeof(int));
 
@@ -50,7 +50,7 @@ int* vq_jpeg_size(char *buf,size_t size)
     return list;
 }
 
-unsigned char* vq_jpeg_parse(char *buf,size_t size){
+unsigned char* vq_jpeg_parse(unsigned char *buf,size_t size){
     char *pixels;
 
     long int p = 2;

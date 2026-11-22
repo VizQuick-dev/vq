@@ -100,7 +100,7 @@ int png_inflate(const uint8_t *idat, size_t idat_size, uint8_t *out, size_t out_
     return ret;
 }
 
-int *vq_png_size(char *buf,size_t size)
+int *vq_png_size(unsigned char *buf,size_t size)
 {
     int *list = malloc(2 * sizeof(int));
 
@@ -126,7 +126,7 @@ int *vq_png_size(char *buf,size_t size)
     return list;
 }
 
-unsigned char *vq_png_parse(char *buf,size_t size)
+unsigned char *vq_png_parse(unsigned char *buf,size_t size)
 {
     const unsigned char *data = (const unsigned char *)buf;
 

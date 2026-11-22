@@ -28,7 +28,7 @@ unsigned char *vq_parse(char *filename, int *width, int *height)
     }
 
     size_t img_size;
-    char *input_filecontent = read_file(filename,&img_size);
+    unsigned char *input_filecontent = read_file(filename,&img_size);
 
     char *filetype = parse_filetype_get(input_filecontent,img_size);
 
@@ -56,7 +56,7 @@ unsigned char *vq_parse(char *filename, int *width, int *height)
     return NULL;
 }
 
-unsigned char *vq_parse_raw(char *buf, size_t img_size, int *width, int *height)
+unsigned char *vq_parse_raw(unsigned char *buf, size_t img_size, int *width, int *height)
 {
     char *filetype = parse_filetype_get(buf,img_size);
 

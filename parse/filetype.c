@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdio.h>
 
-char *parse_filetype_get(char *bytes,size_t size)
+char *parse_filetype_get(unsigned char *bytes,size_t size)
 {
     if (size < 2)
         return NULL;

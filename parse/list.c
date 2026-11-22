@@ -7,8 +7,8 @@
 #include "../lib/ppm/main.h"
 #include "../lib/png/main.h"
 
-typedef int* (*parse_list_func_size) (char*,size_t);
-typedef unsigned char* (*parse_list_func_parse) (char*,size_t);
+typedef int* (*parse_list_func_size) (unsigned char*,size_t);
+typedef unsigned char* (*parse_list_func_parse) (unsigned char*,size_t);
 
 typedef struct
 {

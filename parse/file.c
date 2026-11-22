@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-char* read_file(const char* filename, size_t* out_size) {
+unsigned char* read_file(const char* filename, size_t* out_size) {
     FILE *file = fopen(filename, "rb");
     if (!file) {
         perror("Failed to open file");
@@ -44,5 +44,5 @@ char* read_file(const char* filename, size_t* out_size) {
     buffer[filesize] = '\0';
 
     fclose(file);
-    return buffer;
+    return (unsigned char*)buffer;
 }
