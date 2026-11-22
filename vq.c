@@ -56,8 +56,30 @@ unsigned char *vq_parse(char *filename, int *width, int *height)
     return NULL;
 }
 
-unsigned char *vq_parse_raw(unsigned char *buf, size_t size, int *width, int *height)
+unsigned char *vq_parse_raw(char *buf, size_t img_size, int *width, int *height)
 {
+    char *filetype = parse_filetype_get(buf,img_size);
+
+    vq_log("filetype: %s\n",filetype);
+
+    if (filetype != NULL) {
+        parse_list_func_size vq_func_size = parse_list_get_size(filetype);
+        parse_list_func_parse vq_func_parse = parse_list_get_parse(filetype);
+
+        int *size = vq_func_size(buf,img_size);
+
+        vq_log("size: %d,%d\n",size[0],size[1]);
+
+        *width = size[0];
+        *height = size[1];
+
+        free(size);
+
+        return vq_func_parse(buf,img_size);
+    }
+
+    vq_set_error("filetype not known");
+
     return NULL;
 }
 
