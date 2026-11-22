@@ -1,18 +1,10 @@
 #include <string.h>
 #include <stdio.h>
 
-char *parse_filetype_get(char *filename)
+char *parse_filetype_get(char *bytes,size_t size)
 {
-    FILE *file;
-    unsigned char bytes[2];
-
-    file = fopen(filename, "rb");
-    if (fread(bytes, 1, sizeof(bytes), file) < 2) {
-       fclose(file);
-       return NULL;
-    }
-
-    fclose(file);
+    if (size < 2)
+        return NULL;
 
     if (bytes[0] == 0xff && bytes[1] == 0xd8)
         return "jpeg";

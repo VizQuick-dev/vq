@@ -13,14 +13,15 @@ int main(int argc, char *argv[])
     int input_check = parse_check_file(input_filename);
 
     if(input_check == 1){
-        char *input_filetype = parse_filetype_get(input_filename);
+        size_t img_size;
+        char *input_filecontent = read_file(input_filename,&img_size);
+
+        char *input_filetype = parse_filetype_get(input_filecontent,img_size);
 
         parse_list_func_size func_size = parse_list_get_size(input_filetype);
 
         if(func_size != NULL)
         {
-            size_t img_size;
-            char *input_filecontent = read_file(input_filename,&img_size);
             int *result = func_size(input_filecontent,img_size);
             printf("x=%d; y=%d\n",result[0],result[1]);
         }

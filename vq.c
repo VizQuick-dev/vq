@@ -27,13 +27,14 @@ unsigned char *vq_parse(char *filename, int *width, int *height)
         return NULL;
     }
 
-    char *filetype = parse_filetype_get(filename);
+    size_t img_size;
+    char *input_filecontent = read_file(filename,&img_size);
+
+    char *filetype = parse_filetype_get(input_filecontent,img_size);
 
     vq_log("filetype: %s\n",filetype);
 
     if (filetype != NULL) {
-        size_t img_size;
-        char *input_filecontent = read_file(filename,&img_size);
         parse_list_func_size vq_func_size = parse_list_get_size(filetype);
         parse_list_func_parse vq_func_parse = parse_list_get_parse(filetype);
 
