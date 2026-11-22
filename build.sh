@@ -1,4 +1,4 @@
-echo "== [ Built libvq.a ] =="
+echo "== [ Built libvq.so ] =="
 
 gcc vqmain/main.c -o vq -lvq
 echo "== [ Compiled vq ] =="
