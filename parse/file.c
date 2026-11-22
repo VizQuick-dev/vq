@@ -34,7 +34,7 @@ char* read_file(const char* filename, size_t* out_size) {
     }
 
     size_t read_size = fread(buffer, 1, filesize, file);
-    if (read_size != filesize) {
+    if (read_size != (size_t)filesize) {
         perror("fread failed");
         free(buffer);
         fclose(file);
