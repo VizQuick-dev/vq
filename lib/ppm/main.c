@@ -6,6 +6,8 @@
 #include <string.h>
 #include <limits.h>
 
+#include "vq.h"
+
 typedef struct {
     const unsigned char *buf;
     size_t size;
