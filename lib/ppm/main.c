@@ -1,100 +1,222 @@
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <stdint.h>
+#include <string.h>
+#include <limits.h>
 
-int *vq_ppm_size(unsigned char *buf,size_t size)
+typedef struct {
+    const unsigned char *buf;
+    size_t size;
+    size_t pos;
+} ppm_reader;
+
+static int ppm_skip(ppm_reader *r)
 {
-    int *list = malloc(2 * sizeof(int));
-    if (list == NULL)
-        return NULL;
+    while (r->pos < r->size) {
+        unsigned char c = r->buf[r->pos];
 
-    char *p = (char *)buf;
+        if (isspace(c)) {
+            r->pos++;
+            continue;
+        }
 
-    if (*p != 'P') {
-        free(list);
-        return NULL;
-    }
-    p += 2;
+        if (c == '#') {
+            while (r->pos < r->size &&
+                   r->buf[r->pos] != '\n')
+                r->pos++;
 
-    while (1) {
-        while (isspace((unsigned char)*p))
-            p++;
-
-        if (*p == '#') {
-            while (*p != '\n' && *p != '\0')
-                p++;
             continue;
         }
 
         break;
     }
 
-    list[0] = (int)strtol(p, &p, 10);
-
-    while (1) {
-        while (isspace((unsigned char)*p))
-            p++;
-
-        if (*p == '#') {
-            while (*p != '\n' && *p != '\0')
-                p++;
-            continue;
-        }
-
-        break;
-    }
-
-    list[1] = (int)strtol(p, &p, 10);
-
-    return list;
+    return r->pos < r->size;
 }
 
-unsigned char *vq_ppm_parse(unsigned char *buf,size_t size)
+static int ppm_number(ppm_reader *r, int *out)
 {
-    printf("[PPM] decoding ppm\n");
-    char *p = (char *)buf;
+    if (!ppm_skip(r))
+        return 0;
 
-    if (*p != 'P' || *(p + 1) != '3')
+    size_t start = r->pos;
+
+    while (r->pos < r->size &&
+           isdigit(r->buf[r->pos]))
+        r->pos++;
+
+    if (start == r->pos)
+        return 0;
+
+    char tmp[32];
+    size_t len = r->pos - start;
+
+    if (len >= sizeof(tmp))
+        return 0;
+
+    memcpy(tmp, r->buf + start, len);
+    tmp[len] = '\0';
+
+    char *end;
+    long value = strtol(tmp, &end, 10);
+
+    if (*end || value < 0 || value > INT_MAX)
+        return 0;
+
+    *out = (int)value;
+    return 1;
+}
+
+int *vq_ppm_size(unsigned char *buf, size_t size)
+{
+    if (!buf || size < 3)
         return NULL;
-    p += 2;
 
-    #define SKIP() \
-        while (1) { \
-            while (isspace((unsigned char)*p)) p++; \
-            if (*p == '#') { \
-                while (*p && *p != '\n') p++; \
-            } else break; \
-        }
+    ppm_reader r = { buf, size, 0 };
 
-    SKIP();
-    int width = (int)strtol(p, &p, 10);
+    if (r.buf[r.pos++] != 'P')
+        return NULL;
 
-    SKIP();
-    int height = (int)strtol(p, &p, 10);
+    unsigned char type = r.buf[r.pos++];
 
-    SKIP();
-    int density = (int)strtol(p, &p, 10);
+    if (type != '3' && type != '6')
+        return NULL;
 
-    printf("[ LOGS ]    density=%d\n",density);
+    int *result = malloc(2 * sizeof(int));
+    if (!result)
+        return NULL;
 
-    unsigned char *rgba = malloc(width * height * 4);
+    int maxval;
+
+    if (!ppm_number(&r, &result[0]) ||
+        !ppm_number(&r, &result[1]) ||
+        !ppm_number(&r, &maxval) ||
+        result[0] <= 0 ||
+        result[1] <= 0 ||
+        maxval <= 0 ||
+        maxval > 65535) {
+        free(result);
+        return NULL;
+    }
+
+    return result;
+}
+
+unsigned char *vq_ppm_parse(unsigned char *buf, size_t size)
+{
+    if (!buf || size < 3)
+        return NULL;
+
+    printf("[PPM] decoding ppm\n");
+
+    ppm_reader r = { buf, size, 0 };
+
+    if (r.buf[r.pos++] != 'P')
+        return NULL;
+
+    unsigned char type = r.buf[r.pos++];
+
+    if (type != '3' && type != '6')
+        return NULL;
+
+    int width, height, maxval;
+
+    if (!ppm_number(&r, &width) ||
+        !ppm_number(&r, &height) ||
+        !ppm_number(&r, &maxval))
+        return NULL;
+
+    if (width <= 0 || height <= 0 ||
+        maxval <= 0 || maxval > 65535)
+        return NULL;
+
+    printf("[ LOGS ] density=%d\n", maxval);
+
+    size_t pixels = (size_t)width * (size_t)height;
+
+    if (pixels > SIZE_MAX / 4)
+        return NULL;
+
+    unsigned char *rgba = malloc(pixels * 4);
+
     if (!rgba)
         return NULL;
 
-    for (int i = 0; i < width * height; i++) {
-        SKIP();
-        int r = (int)strtol(p, &p, 10);
+    if (type == '3') {
+        // ASCII PPM
 
-        SKIP();
-        int g = (int)strtol(p, &p, 10);
+        for (size_t i = 0; i < pixels; i++) {
+            int red, green, blue;
 
-        SKIP();
-        int b = (int)strtol(p, &p, 10);
+            if (!ppm_number(&r, &red) ||
+                !ppm_number(&r, &green) ||
+                !ppm_number(&r, &blue)) {
+                free(rgba);
+                return NULL;
+            }
 
-        rgba[4 * i + 0] = (unsigned char)r;
-        rgba[4 * i + 1] = (unsigned char)g;
-        rgba[4 * i + 2] = (unsigned char)b;
-        rgba[4 * i + 3] = 255;
+            if (red > maxval || green > maxval || blue > maxval) {
+                free(rgba);
+                return NULL;
+            }
+
+            rgba[i * 4 + 0] = (unsigned char)((red * 255LL) / maxval);
+            rgba[i * 4 + 1] = (unsigned char)((green * 255LL) / maxval);
+            rgba[i * 4 + 2] = (unsigned char)((blue * 255LL) / maxval);
+            rgba[i * 4 + 3] = 255;
+        }
+    } else {
+        // Binary PPM
+
+        // Consume the mandatory whitespace after maxval.
+        if (r.pos >= r.size || !isspace(r.buf[r.pos])) {
+            free(rgba);
+            return NULL;
+        }
+
+        unsigned char separator = r.buf[r.pos++];
+
+        // CRLF is a single line ending.
+        if (separator == '\r' &&
+            r.pos < r.size &&
+            r.buf[r.pos] == '\n')
+            r.pos++;
+
+        int bytes_per_sample = maxval > 255 ? 2 : 1;
+
+        if (pixels > (SIZE_MAX - r.pos) / (3 * bytes_per_sample) ||
+            r.pos + pixels * 3 * bytes_per_sample > r.size) {
+            free(rgba);
+            return NULL;
+        }
+
+        for (size_t i = 0; i < pixels; i++) {
+            for (int c = 0; c < 3; c++) {
+                unsigned int value;
+
+                if (bytes_per_sample == 1) {
+                    value = r.buf[r.pos++];
+                } else {
+                    // P6 16-bit samples are big-endian.
+                    value = ((unsigned int)r.buf[r.pos] << 8) |
+                            r.buf[r.pos + 1];
+                    r.pos += 2;
+                }
+
+                if (value > (unsigned int)maxval) {
+                    free(rgba);
+                    return NULL;
+                }
+
+                rgba[i * 4 + c] =
+                    (unsigned char)((value * 255ULL) / maxval);
+            }
+
+            rgba[i * 4 + 3] = 255;
+        }
     }
+
     return rgba;
 }
