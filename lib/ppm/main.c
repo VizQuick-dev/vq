@@ -109,7 +109,7 @@ unsigned char *vq_ppm_parse(unsigned char *buf, size_t size)
     if (!buf || size < 3)
         return NULL;
 
-    printf("[PPM] decoding ppm\n");
+    vq_log("[PPM] decoding ppm\n");
 
     ppm_reader r = { buf, size, 0 };
 
@@ -132,7 +132,7 @@ unsigned char *vq_ppm_parse(unsigned char *buf, size_t size)
         maxval <= 0 || maxval > 65535)
         return NULL;
 
-    printf("[ LOGS ] density=%d\n", maxval);
+    vq_log("[ LOGS ] density=%d\n", maxval);
 
     size_t pixels = (size_t)width * (size_t)height;
 
